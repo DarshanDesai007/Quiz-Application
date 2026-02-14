@@ -234,7 +234,7 @@ Services contain the core application logic. They are registered as **Scoped** i
 | Method | Signature | Logic |
 |---|---|---|
 | `GetAllAsync()` | `Task<IEnumerable<QuestionGridDto>>` | Maps entities to `QuestionGridDto`. Only includes `CorrectAnswer` for choice-based types (SingleChoice, MultipleChoice). Text types return `null` for correct answer since they're subjective. |
-| `GetAllDetailAsync()` | `Task<IEnumerable<QuestionDetailDto>>` | Fetches all questions, **shuffles them randomly** using Fisher-Yates algorithm, then maps with sequential `OrderNo` (1, 2, 3...). Returns options for each question so the quiz can render inputs. |
+| `GetAllDetailAsync()` | `Task<IEnumerable<QuestionDetailDto>>` | Fetches all questions, **shuffles them randomly** using Fisher-Yates algorithm, then takes the **first 5 items**. Maps them with sequential `OrderNo` (1, 2, 3...) so the user sees Q1–Q5. Returns options for each question so the quiz can render inputs. |
 | `GetByOrderAsync(orderNo)` | `Task<QuestionDetailDto?>` | Returns a single detailed question by order number with sorted options. Options are sorted by `Id` for consistent display. |
 | `GetCountAsync()` | `Task<int>` | Delegates to `QuestionRepo.GetCountAsync()`. |
 
@@ -295,14 +295,16 @@ Each element is swapped with a random earlier element, producing an unbiased per
 
 1. **Fetch data:** Gets all questions from `QuestionRepo` and all user responses from `ResponseRepo`.
 2. **Build response map:** `Dictionary<QuestionId, AnswerText>` for O(1) lookup.
-3. **Iterate questions (ordered):** For each question:
-   - Look up the user's answer from the response map.
-   - **Scoring logic:**
-     - **SingleChoice:** Compare user's answer (option ID) with `CorrectAnswer`. Exact string match → correct.
-     - **MultipleChoice:** Split both user answer and correct answer by comma, sort both lists, then `SequenceEqual()` — order-independent comparison.
-     - **ShortAnswer / PhoneNumber / LongAnswer:** `isCorrect` stays `null` — no auto-grading for text answers.
-   - **Display text mapping:** Convert stored option IDs back to human-readable text (e.g., `"11"` → `"Mars"`).
-4. **Compute stats:** Total questions, attempted (non-empty answers), correct count, percentage.
+3. **Iterate questions (ordered):**
+   - **Filter:** Process only the questions present in the response map (attempted questions).
+   - For each included question:
+     - Look up the user's answer from the response map.
+     - **Scoring logic:**
+       - **SingleChoice:** Compare user's answer (option ID) with `CorrectAnswer`. Exact string match → correct.
+       - **MultipleChoice:** Split both user answer and correct answer by comma, sort both lists, then `SequenceEqual()` — order-independent comparison.
+       - **ShortAnswer / PhoneNumber / LongAnswer:** `isCorrect` stays `null` — no auto-grading for text answers.
+     - **Display text mapping:** Convert stored option IDs back to human-readable text (e.g., `"11"` → `"Mars"`).
+4. **Compute stats:** Total is based on the **filtered count (5)**, attempted (non-empty answers), correct count, percentage.
 
 ---
 
@@ -437,9 +439,9 @@ Page Load
 | `renderTextarea(saved)` | Creates a textarea with 4 rows. |
 | `getCurrentAnswer()` | Reads the current input value based on question type — selected radio, checked checkboxes (joined by comma), or text content. |
 | `validateCurrentInput()` | **Client-side validation** mirroring backend rules. Shows error message via `#validation-error` div. Returns `true/false`. |
-| `onNextClick()` | Validates → saves to API → advances `currentIndex` → renders next question. |
+| `onNextClick()` | Validates → calls `saveCurrentResponse()`. **If save fails (returns false), stops navigation.** Otherwise advances `currentIndex` → renders next question. |
 | `onPreviousClick()` | Decrements `currentIndex` → renders immediately from cache (no API call). |
-| `onSubmitClick()` | Validates → saves → redirects to `/Home/Summary?sessionId={guid}`. |
+| `onSubmitClick()` | Validates → calls `saveCurrentResponse()`. **If save fails, stops submission.** Otherwise redirects to `/Home/Summary?sessionId={guid}`. |
 | `updateNavButtons()` | Hides "Next" and shows "Submit" on the last question. Disables "Previous" on the first. |
 | `updateProgress()` | Updates the gradient progress bar width as a percentage. |
 

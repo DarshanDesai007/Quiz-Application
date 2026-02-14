@@ -6,11 +6,12 @@ A full-stack web-based quiz application built with **ASP.NET Core 8 MVC**, **Ent
 
 ## 📸 Features
 
-- **20 Questions** across 5 input types — Radio, Checkbox, Textbox, Phone Number, Textarea
+- **5-Question Quiz** — Randomly selects 5 questions from a pool of 20 for each session
 - **Random Order** — Questions are shuffled every time using Fisher-Yates algorithm
 - **All Questions Mandatory** with type-specific validation (client + server)
 - **Upsert Answers** — Navigate freely, change answers anytime
-- **Auto-Scoring** — Instant results with correct/wrong breakdown
+- **Auto-Scoring** — Instant results only for the attempted questions
+- **Reliable Saving** — Navigation blocked until answer is successfully saved
 - **Session-Based** — Each quiz attempt gets a unique session ID
 - **Premium Dark UI** — Glassmorphism, gradient accents, animated backgrounds
 - **Secure API** — Basic Authentication on all endpoints, XSS prevention
@@ -27,6 +28,7 @@ A full-stack web-based quiz application built with **ASP.NET Core 8 MVC**, **Ent
 | Frontend | HTML, CSS, JavaScript, jQuery |
 | Styling | Bootstrap 5 + Custom Dark Theme |
 | Auth | HTTP Basic Authentication |
+| Cloud | Azure App Service + Azure SQL Database (Free Tier) |
 
 ---
 
@@ -140,6 +142,21 @@ Open your browser at **http://localhost:5243** (or the URL shown in console).
 
 ---
 
+---
+
+## ☁️ Azure Deployment (Free Tier)
+
+The application is deployed to Azure using the **F1 Free App Service Plan** and **Serverless SQL Database**.
+
+**Live URL:** [https://quiz-app-darshan.azurewebsites.net](https://quiz-app-darshan.azurewebsites.net)
+
+### Architecture
+- **App Service:** Hosts the ASP.NET Core Web Application.
+- **SQL Database:** Serverless tier (auto-pauses after 1 hour of inactivity).
+- **CI/CD:** Manual deployment via Azure CLI (zip deploy).
+
+---
+
 ## 📋 Question Types & Validation
 
 | Type | UI Control | Validation Rule |
@@ -161,7 +178,7 @@ All endpoints require **Basic Authentication** (`admin:quiz@123`).
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/api/questions` | All questions (grid view, no options) |
-| `GET` | `/api/questions/detail` | All questions with options (shuffled) |
+| `GET` | `/api/questions/detail` | **5 random questions** with options (shuffled) |
 | `GET` | `/api/questions/{orderNo}` | Single question by order number |
 | `POST` | `/api/responses` | Save/update a user answer |
 | `GET` | `/api/responses/{sessionId}` | All answers for a session |
