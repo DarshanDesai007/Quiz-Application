@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="hero-section">
+    <h1>Test Your Knowledge<br />Like Never Before</h1>
+    <p class="lead">
+        Challenge yourself with our interactive quiz covering multiple question types.
+        Navigate freely, track your progress, and see detailed results.
+    </p>
+
+    <div class="hero-features">
+        <div class="hero-feature">
+            <div class="icon">📝</div>
+            <span>5 Question Types</span>
+        </div>
+        <div class="hero-feature">
+            <div class="icon">🔄</div>
+            <span>Free Navigation</span>
+        </div>
+        <div class="hero-feature">
+            <div class="icon">📊</div>
+            <span>Instant Results</span>
+        </div>
+        <div class="hero-feature">
+            <div class="icon">🔒</div>
+            <span>Secure API</span>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a asp-controller="Home" asp-action="Quiz" class="btn-glow btn-glow-primary">Start Quiz →</a>
+        <a asp-controller="Home" asp-action="Grid" class="btn-glow btn-glow-outline">View All Questions</a>
+    </div>
+</div>

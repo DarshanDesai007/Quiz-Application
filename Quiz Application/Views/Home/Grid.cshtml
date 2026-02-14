@@ -1,0 +1,33 @@
+@{
+    ViewData["Title"] = "Question Grid";
+}
+
+<div class="grid-section">
+    <h2>📋 All Questions</h2>
+
+    <div id="grid-spinner" class="loading-spinner">
+        <div class="spinner"></div>
+        <span>Loading questions...</span>
+    </div>
+
+    <div class="glass-card" style="display:none; overflow:hidden;" id="grid-container">
+        <div class="table-responsive">
+            <table class="table-glass" id="questions-table">
+                <thead>
+                    <tr>
+                        <th style="width:60px">#</th>
+                        <th>Question</th>
+                        <th style="width:150px">Type</th>
+                        <th style="width:150px">Correct Answer</th>
+                    </tr>
+                </thead>
+                <tbody id="grid-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/api.js" asp-append-version="true"></script>
+    <script src="~/js/grid.js" asp-append-version="true"></script>
+}

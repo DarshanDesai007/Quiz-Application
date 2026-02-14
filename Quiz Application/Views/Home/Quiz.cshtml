@@ -1,0 +1,28 @@
+@{
+    ViewData["Title"] = "Take Quiz";
+}
+
+<div class="quiz-card glass-card">
+    <div class="card-header-custom">
+        <h4>📝 Quiz</h4>
+        <span id="progress-badge" class="progress-pill">Q 1 / ?</span>
+    </div>
+    <div class="card-body-custom">
+        <div id="question-text" class="question-text"></div>
+        <div id="quiz-input"></div>
+        <div id="validation-error" class="validation-error" style="display:none;"></div>
+        <div class="progress-bar-container" id="progress-container">
+            <div class="progress-bar-fill" id="progress-fill" style="width: 0%"></div>
+        </div>
+    </div>
+    <div class="card-footer-custom">
+        <button id="btn-prev" class="btn-glow btn-glow-outline" disabled>← Previous</button>
+        <button id="btn-next" class="btn-glow btn-glow-primary">Next →</button>
+        <button id="btn-submit" class="btn-glow btn-glow-success" style="display:none;">Submit ✓</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/api.js" asp-append-version="true"></script>
+    <script src="~/js/quiz.js" asp-append-version="true"></script>
+}

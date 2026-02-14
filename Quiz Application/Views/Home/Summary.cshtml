@@ -1,0 +1,46 @@
+@{
+    ViewData["Title"] = "Quiz Summary";
+}
+
+<div class="grid-section">
+    <h2>🏆 Quiz Results</h2>
+
+    <div id="summary-spinner" class="loading-spinner">
+        <div class="spinner"></div>
+        <span>Calculating results...</span>
+    </div>
+
+    <div id="summary-container" style="display:none;">
+        <!-- Stats Cards -->
+        <div class="row mb-4" id="stats-row"></div>
+
+        <!-- Details Table -->
+        <div class="glass-card" style="overflow:hidden;">
+            <div class="table-responsive">
+                <table class="table-glass" id="summary-table">
+                    <thead>
+                        <tr>
+                            <th style="width:50px">#</th>
+                            <th>Question</th>
+                            <th style="width:130px">Type</th>
+                            <th>Your Answer</th>
+                            <th>Correct Answer</th>
+                            <th style="width:100px">Result</th>
+                        </tr>
+                    </thead>
+                    <tbody id="summary-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="text-center mt-4 d-flex justify-content-center gap-3">
+            <a asp-controller="Home" asp-action="Quiz" class="btn-glow btn-glow-primary">🔄 Retake Quiz</a>
+            <a asp-controller="Home" asp-action="Index" class="btn-glow btn-glow-outline">Home</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/api.js" asp-append-version="true"></script>
+    <script src="~/js/summary.js" asp-append-version="true"></script>
+}
