@@ -43,7 +43,7 @@ public class QuestionSvc(IQuestionRepo repo) : IQuestionSvc
         }
 
         // Map to DTOs with sequential order numbers
-        return list.Select((q, idx) =>
+        return list.Take(5).Select((q, idx) =>
         {
             var options = q.Options
                 .OrderBy(o => o.Id)

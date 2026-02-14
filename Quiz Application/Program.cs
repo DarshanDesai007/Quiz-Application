@@ -31,6 +31,13 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+// Auto-apply migrations in production (so DB gets created/seeded)
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<QuizDbContext>();
+    db.Database.Migrate();
+}
+
 // ----- Middleware Pipeline -----
 if (!app.Environment.IsDevelopment())
 {
