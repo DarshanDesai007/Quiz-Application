@@ -17,10 +17,16 @@ public class SummarySvc(IQuestionRepo questionRepo, IResponseRepo responseRepo) 
         var responses = await responseRepo.GetAllBySessionAsync(sessionId);
         var responseMap = responses.ToDictionary(r => r.QuestionId, r => r.AnswerText);
 
+        // Filter: Only include questions that have a response (since we serve random 5)
+        var relevantQuestions = questions
+            .Where(q => responseMap.ContainsKey(q.Id))
+            .OrderBy(q => q.OrderNo)
+            .ToList();
+
         var summaries = new List<QuestionSummaryItem>();
         int attempted = 0, correct = 0;
 
-        foreach (var q in questions.OrderBy(q => q.OrderNo))
+        foreach (var q in relevantQuestions)
         {
             responseMap.TryGetValue(q.Id, out var userAnswer);
             bool hasAnswer = !string.IsNullOrWhiteSpace(userAnswer);
@@ -81,7 +87,9 @@ public class SummarySvc(IQuestionRepo questionRepo, IResponseRepo responseRepo) 
             ));
         }
 
-        int total = questions.Count;
+
+
+        int total = relevantQuestions.Count;
         double pct = total > 0 ? Math.Round((double)correct / total * 100, 1) : 0;
 
         return new SummaryDto(summaries, new SummaryStats(total, attempted, correct, pct));
