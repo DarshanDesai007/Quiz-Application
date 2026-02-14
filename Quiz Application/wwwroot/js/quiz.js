@@ -180,7 +180,7 @@
     // ----- Navigation -----
     async function onNextClick() {
         if (!validateCurrentInput()) return;
-        await saveCurrentResponse();
+        if (!await saveCurrentResponse()) return; // Stop if save fails
         currentIndex++;
         renderCurrent();
     }
@@ -194,7 +194,7 @@
 
     async function onSubmitClick() {
         if (!validateCurrentInput()) return;
-        await saveCurrentResponse();
+        if (!await saveCurrentResponse()) return; // Stop if save fails
         const sessionId = getOrCreateSessionId();
         window.location.href = `/Home/Summary?sessionId=${sessionId}`;
     }
